@@ -1,4 +1,5 @@
 <div align="justify">
+
 # Coordinación de Robots ABB IRB 120 – Simulación y Ejecución Real
 
 ## Introducción
@@ -10,16 +11,12 @@ Este proyecto aborda la coordinación de dos manipuladores **ABB IRB 120** en do
   <img src="https://github.com/user-attachments/assets/9500abc6-e0b8-4c03-bf8e-bdc068a76703" />
 </p>
 
-![image](https://github.com/user-attachments/assets/9500abc6-e0b8-4c03-bf8e-bdc068a76703)
-
 La fase de simulación se implementó creando tres **comportamientos progresivos** en RobotStudio. En el primero, cada IRB 120 recorre de manera independiente una trayectoria rectangular sobre una mesa. En el segundo, se añade una **ventosa inteligente** en el extremo de cada robot y se desarrolla la **lógica de estación** con señales digitales. El tercer comportamiento orquesta la apilación de doce piezas, alternando la orientación en cada nivel, aplicando lógica de estación avanzada y movimientos lineales en RAPID para asegurar un agarre y colocación libres de colisiones. Toda la coordinación y las rutinas RAPID se verificaron exhaustivamente en RobotStudio antes de saltar al hardware real.
 
 ## Ejecución en Entorno Real
 <p align="center">
   <img src="https://github.com/user-attachments/assets/68311aee-7090-4371-9ecd-a13a9a19801f" />
 </p>
-
-![image](https://github.com/user-attachments/assets/68311aee-7090-4371-9ecd-a13a9a19801f)
 
 Para trasladar la coordinación al mundo real, se desarrolló un controlador central en **Python** `socket_PC.py` que establece dos conexiones **socket** con las direcciones IP de cada robot. Utilizando `select()`, el servidor Python escucha confirmaciones de finalización de tarea de uno de los robots y, de inmediato, envía el comando de inicio al otro, alternando así los movimientos de elevación y descenso de la caja. En el lado de los robots, cada IRB 120 ejecuta un programa en **RAPID** que crea un **socket servidor**, espera el mensaje de arranque con `SocketReceive` y al finalizar su rutina responde con `SocketSend`. Este intercambio determinista de mensajes garantiza que ninguno de los dos controladores independientes avance sin la confirmación del compañero, logrando una sincronización precisa en el laboratorio.
 
